@@ -1,3 +1,5 @@
+
+delete log_consultas/_doc/1
 PUT log_consultas/_doc/1
 {
 	"@timestamp":"2010-05-15T22:00:54",
@@ -7,7 +9,10 @@ PUT log_consultas/_doc/1
 	"consultas_realizadas":52
 	
 	}
+
+
 get log_consultas/_doc/1
+
 
 PUT _bulk
 {"create":{"_index":"log_consultas","_id":2}}
@@ -606,3 +611,46 @@ PUT _bulk
 {"doc":{"@timestamp":"2010-05-15T07:35:51","estado_consulta":"informativo","servicio":"borrado","administrador":"Juan Lara","consultas_realizadas":14}}
 {"create":{"_index":"log_consultas","_id":299}}
 {"doc":{"@timestamp":"2010-05-15T18:36:26","estado_consulta":"informativo","servicio":"borrado","administrador":"Juan Carlos","consultas_realizadas":74}}
+
+
+
+GET log_consultas/_search
+{
+  "query":{
+    "bool":{"filter":{
+      "bool": {
+        "should":[
+          {"term":{"estado_consulta":"error"}},
+          {"term":{"estado_consulta":"consumo"}}
+          ]
+      }
+    }}
+  }
+}
+
+
+GET log_consultas/_search
+{
+  "query":{
+    "bool":{"filter":{
+      "bool": {
+          {"term":{"administrador":""}},
+      }
+    }}
+  }
+}
+
+
+GET log_consultas/_search
+{
+"query": {"match_phrase": {"administrador":"Juan Lara"}}
+}
+
+
+POST log_consultas/_search?size=0
+{
+  "aggs": {
+    "precio": { "sum": { "field": "consultas_realizadas" } }
+  }
+}
+
